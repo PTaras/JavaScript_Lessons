@@ -13,10 +13,10 @@
  * - Второй параметр должен обладать типом number.
  */
 
-// Решение
+// Решение:
 
 function truncate(string, maxLength) {
-    
+
     let lenStr = string.length;
     let newString = string.slice(0, maxLength - 3) + '...';
 
