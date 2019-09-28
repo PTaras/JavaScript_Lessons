@@ -13,7 +13,7 @@
 
 const PRICE = '$120';
 
-// Решение
+// Решение:
 
 function extractCurrencyValue(source) {
 
