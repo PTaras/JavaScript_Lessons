@@ -25,25 +25,29 @@
 // exports.f = f;
 
 
-// function isArr(Array) {
-//     if (Array.isArray === false) {
-//         throw new Error('Parameters type should be have a Array.');
-//     }
-// }
-
-// function isEmpty(Array) {
-//     if (Array.length == 0) {
-//         throw new Error('Array must not be empty.');
-//     }
-// }
-
-function rec(items) {
-  // isArr(myArray);
-  // isEmpty(myArray);
-
-  return items.length === 0 ? 0 : items.splice(0, 1);
+function isArr(items) {
+  if (Array.isArray === false) {
+    throw new Error('Parameters type should be have a Array.');
+  }
 }
 
-console.log(rec([5, 2, 4, 7]));
+function isEmpty(items) {
+  if (Array.length == 0) {
+    throw new Error('Array must not be empty.');
+  }
+}
 
+
+var i = 0;
+
+function rec(items) {
+  isArr(items);
+  isEmpty(items);
+
+  console.log(items[i]);
+  i++;
+  return i < items.length ? rec(items) : 0;
+}
+
+rec([1, 2, 3].splice(0, 3));
 
