@@ -63,7 +63,7 @@ function isAllParamNumber(array1) {
 
 isFirstParamArr(array1);
 isAllParamArr(array1);
-isAllParamNumber(array1);
+// isAllParamNumber(array1);
 
 const collect = function(array1) {
 

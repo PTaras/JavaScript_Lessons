@@ -36,8 +36,14 @@ const array = [
     'Приветствую.',
 ];
 
+// function isArr(array) {
+//     if (Array.isArray(array[0]) === false) {
+//         throw new Error('The first parameter is not an array.');
+//     }
+// }
+
 function isArr(array) {
-    if (Array.isArray(array[0]) === false) {
+    if (!Array.isArray(array)) {
         throw new Error('The first parameter is not an array.');
     }
 }
