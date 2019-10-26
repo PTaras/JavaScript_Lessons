@@ -27,6 +27,21 @@
  */
 
 // Решение
+function createLogger() {
+    let arr = [];
+    
+    return {
+        call: function call(fn, ...args) {
+            let sum = fn(...args);
+
+            arr.push({ name: fn.name, in: args, out: sum });
+            return sum;
+        },
+        print: function print() {
+            return arr;
+        }
+    };
+}
 
 const returnIdentity = n => n;
 const sum = (a, b) => a + b;
@@ -45,18 +60,3 @@ console.log(logger2.print()); // [ { name: 'sum', in: [ 3, 4 ], out: 7 }, { name
 
 exports.createLogger = createLogger;
 
-function createLogger() {
-    let arr = [];
-    
-    return {
-        call: function call(fn, ...args) {
-            let sum = fn(...args);
-
-            arr.push({ name: fn.name, in: args, out: sum });
-            return sum;
-        },
-        print: function print() {
-            return arr;
-        }
-    };
-}

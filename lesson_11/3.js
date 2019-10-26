@@ -12,7 +12,23 @@
  */
 
 // Решение
+function createFibonacciGenerator() {
+    let prev = 0;
+    let next = 1;
 
+    return obj = {
+        print: function print() {
+            let res = prev + next;
+            prev = next;
+            next = res;
+            return prev;
+        },
+        reset: function reset() {
+            prev = 0;
+            next = 1;
+        }
+    };
+}
 const generator1 = createFibonacciGenerator();
 
 console.log(generator1.print()); // 1
@@ -32,21 +48,3 @@ console.log(generator2.print()); // 2
 
 exports.createFibonacciGenerator = createFibonacciGenerator;
 
-
-function createFibonacciGenerator() {
-    let prev = 0;
-    let next = 1;
-
-    return obj = {
-        print: function print() {
-            let res = prev + next;
-            prev = next;
-            next = res;
-            return prev;
-        },
-        reset: function reset() {
-            prev = 0;
-            next = 1;
-        }
-    };
-}
