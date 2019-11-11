@@ -18,16 +18,21 @@ class Stringer {
     }
 
     reverse(string) {
-        this.string = string;
-        return this.string = string.split("").reverse().join("");
+        let reverse = this.string = string.split("").reverse().join("");
+
+        return reverse;
     }
 
     uppercaseFirst(string) {
-        return this.string = string.charAt(0).toUpperCase() + string.slice(1);
+        let uppercaseFirst = string.charAt(0).toUpperCase() + string.slice(1);
+
+        return uppercaseFirst;
     }
 
     uppercaseAll(string) {
-        return this.string = string.split(/\s+/).map(str => str[0].toUpperCase() + str.substring(1)).join(' ');
+        let uppercaseAll = string.split(/\s+/).map(str => str[0].toUpperCase() + str.substring(1)).join(' ');
+
+        return uppercaseAll;
     }
 }
 
