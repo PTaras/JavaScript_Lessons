@@ -27,7 +27,17 @@
  */
 
 // Решение
+function compose(...args) {
+    const lastFunc = args.pop(); 
 
+    if (!lastFunc.length) { 
+        return args.reduceRight((param, func) => func(param), lastFunc()); 
+    }
+    
+    return function (arg = "") {
+        return args.reduceRight((param, func) => func(param), lastFunc(arg));
+    }
+};
 const result1 = compose(
     prevResult => prevResult + 'o',
     prevResult => prevResult + 'l',
@@ -41,21 +51,9 @@ const result2 = compose(
     prevResult => prevResult + 'e',
     () => 'h',
 );
-
-function compose(...args) {
-    let items = args.reverse();
-    let result = '';
-
-    for (i in items) {
-        result = items[i](result);
-    };
-
-    return function (r) {
-        return r + result;
-    }
-};
-
 console.log(result1); // 'hello'
 console.log(result2); // 'hello'
+
+
 
 
