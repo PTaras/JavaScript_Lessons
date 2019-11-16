@@ -40,8 +40,8 @@ const postpone = (start, end, delay) => {
 
     for (let i = start; i >= end; i--) {
         setTimeout(() => {
-            console.log(start - (i - 1));
-        }, delay * i);
+            console.log(i);
+        }, delay * (start - (i - 1))); 
     };
 
 }
