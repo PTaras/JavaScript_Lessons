@@ -16,6 +16,35 @@
  */
 
 // Решение
+function validate(start) {
+    if (typeof start !== 'number') {
+        throw new Error('First parameter type should be have a number type.');
+    }
+}
+
+function validate(end) {
+    if (typeof end !== 'number') {
+        throw new Error('Second parameter type should be have a number type.');
+    }
+}
+
+const postpone = (start, end, delay) => {
+    validate(start);
+    validate(end);
+
+    for (let i = start; i <= end; i++) {
+        setTimeout(() => {
+            console.log(i);
+        }, delay * i);
+    };
+
+    for (let i = start; i >= end; i--) {
+        setTimeout(() => {
+            console.log(start - (i - 1));
+        }, delay * i);
+    };
+
+}
 
 postpone(1, 3, 1000);
 // 1
