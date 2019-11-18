@@ -27,7 +27,7 @@
 */
 
 // Решение
-const privateData = new Map();
+
 class DB {
     constructor(person, name, age, country, salary) {
         this.person = person;
@@ -36,78 +36,44 @@ class DB {
         this.country = country;
         this.salary = salary;
     }
-
     create(person) {
-        function getRandomID(min, max) {
-            const int = Math.floor(Math.random() * (max - min + 1)) + min;
-
-            return int.toString(36);
-        }
-
-        const id = getRandomID(0, 1679615);
+        const privateData = new Map();
+        let privateId = 0;
 
         if (typeof person !== 'object') {
             throw new Error('Parameter must be an object!')
         }
-
-        Object.defineProperty(this, 'id', { value: id });
-        privateData.set(id, person);
-
-        return id;
+        
+        Object.defineProperty(this, '_id', { value: privateId++ });
+        privateData[this._id] = {
+            person,
+        };
+        console.log('1', privateData);
+        return privateData;
     };
-
     read(id) {
-        if (typeof id !== 'string' || id === '') {
+        if (typeof id !== 'string' && id === '') {
             throw new Error('Parameter must be a string and don`t empty!')
         }
 
         if (id === 'undefined') {
             return null;
         }
-        const readPerson = { id, ...person };
-
-        return readPerson;
+        return person;
     }
-
-    readAll(...args) {
-        if (args.length !== 0) {
-            throw new Error('The method readAll() should be without parameters!')
-        }
-
-        let arr = privateData.entries();
-
-        return arr;
+    readAll() {
+        const privateData = new Map();
+        return privateData;
     }
-
-    update(id, age) {
-        if (typeof id !== 'string') {
-            throw new Error('id must be a string!')
-        }
-
-        if (id === 'undefined') {
-            throw new Error('id should not be undefined!')
-        }
-
-        if (typeof age !== 'object') {
-            throw new Error('age not valid!')
-        }
-
-        person.age = age;
+    update(_id, person){
+        const privateData = new Map();
+        privateData.set(_id, person);
+        console.log('2',privateData);
     }
-    
-    delete(id) {
-        if (typeof id !== 'string') {
-            throw new Error('id must be a string!')
-        }
-
-        if (id === 'undefined') {
-            throw new Error('id should not be undefined!')
-        }
-
-        console.log('delete1', privateData);
-        privateData.delete(id);
-        console.log('delete2', privateData);
-        console.log('delete3', privateData.delete('id'));
+    delete(_id){
+        const privateData = new Map();
+        privateData.delete(_id);
+        console.log('3',privateData);
     }
 }
 
@@ -126,3 +92,16 @@ const customer = db.read(id);
 const customers = db.readAll(); // массив пользователей
 db.update(id, { age: 22 }); // id
 db.delete(id); // true
+
+
+
+var myMap = new Map();
+
+// Добавление нового элемента объекту Map
+myMap.set('bar', 'foo');
+myMap.set(1, 'foobar');
+console.log(myMap);
+
+// Обновление существующего элемента
+myMap.set('bar', 'baz');
+console.log(myMap);
