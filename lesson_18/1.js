@@ -104,10 +104,7 @@ class DB {
             throw new Error('id should not be undefined!')
         }
 
-        console.log('delete1', privateData);
         privateData.delete(id);
-        console.log('delete2', privateData);
-        console.log('delete3', privateData.delete('id'));
     }
 }
 

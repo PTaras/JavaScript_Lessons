@@ -49,6 +49,7 @@ class DB {
     if (id === 'undefined') {
       return null;
     }
+    
     const readPerson = { id, ...person };
 
     return readPerson;
@@ -58,7 +59,7 @@ class DB {
       throw new Error('The method readAll() should be without parameters!')
     }
 
-    let arr = privateData.entries();
+    const arr = privateData.entries();
 
     return arr;
   }
@@ -66,9 +67,11 @@ class DB {
     if (typeof id !== 'string') {
       throw new Error('id must be a string!')
     }
+
     if (id === 'undefined') {
       throw new Error('id should not be undefined!')
     }
+
     if (typeof age !== 'object') {
       throw new Error('age not valid!')
     }
@@ -79,30 +82,48 @@ class DB {
     if (typeof id !== 'string') {
       throw new Error('id must be a string!')
     }
+
     if (id === 'undefined') {
       throw new Error('id should not be undefined!')
     }
-    
-    privateData.delete(id);
+
+    // privateData.delete(id);
   }
   find(query) {
     if (typeof query !== 'object') {
       throw new Error('query must be an object!')
     }
+
     if (typeof query === 'undefined') {
       throw new Error('query should not be empty!')
     }
 
-    const find1 = privateData.has('name');
-    const find2 = privateData.has('country');
-    const arr = [find1, find2]
-    console.log('1', find2);
-    console.log('2', privateData);
-    console.log('3', this.query);
-    return arr;
+    const arr = [];
+    privateData.forEach(function (value, key) {
+      if (arr.name === query.name) {
+        if (arr.country === query.country) {
+          if (query.age.min >= value.age && value.salary >= query.salary.min && value.salary <= query.salary.max) {
+            arr.push(value, key);
+
+            return arr;
+          }
+        }
+      }
+
+      return arr;
+    });
   }
 }
+const db = new DB();
+const person = {
+  name: "Pitter", // обязательное поле с типом string
+  age: 21, // обязательное поле с типом number
+  country: "ua", // обязательное поле с типом string
+  salary: 500 // обязательное поле с типом number
+};
 
+const id = db.create(person);
+const customer = db.read(id);
 // Проверка
 const query = {
   country: "ua",
