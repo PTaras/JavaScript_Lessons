@@ -100,8 +100,8 @@ class DB {
 
     const arr = [];
     privateData.forEach(function (value, key) {
-      if (arr.name === query.name) {
-        if (arr.country === query.country) {
+      if (value.name === query.name) {
+        if (value.country === query.country) {
           if (query.age.min >= value.age && value.salary >= query.salary.min && value.salary <= query.salary.max) {
             arr.push(value, key);
 
