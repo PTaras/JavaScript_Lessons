@@ -29,8 +29,7 @@
 // Решение
 const privateData = new Map();
 class DB {
-    constructor(person, name, age, country, salary) {
-        this.person = person;
+    constructor(name, age, country, salary) {
         this.name = name;
         this.age = age;
         this.country = country;
@@ -50,7 +49,6 @@ class DB {
             throw new Error('Parameter must be an object!')
         }
 
-        Object.defineProperty(this, 'id', { value: id });
         privateData.set(id, person);
 
         return id;
@@ -74,7 +72,11 @@ class DB {
             throw new Error('The method readAll() should be without parameters!')
         }
 
-        let arr = privateData.entries();
+        const arr = [];
+
+        privateData.forEach(function (value, key) {
+            arr.push(key, value);
+        });
 
         return arr;
     }
@@ -92,9 +94,11 @@ class DB {
             throw new Error('age not valid!')
         }
 
-        person.age = age;
+        for (let key in age) {
+            person.age = age[key];
+        }
     }
-    
+
     delete(id) {
         if (typeof id !== 'string') {
             throw new Error('id must be a string!')

@@ -13,8 +13,7 @@
 // Решение
 const privateData = new Map();
 class DB {
-  constructor(person, name, age, country, salary, query) {
-    this.person = person;
+  constructor(name, age, country, salary, query) {
     this.name = name;
     this.age = age;
     this.country = country;
@@ -35,7 +34,6 @@ class DB {
       throw new Error('Parameter must be an object!')
     }
 
-    Object.defineProperty(this, 'id', { value: id });
     privateData.set(id, person);
 
     return id;
@@ -49,20 +47,25 @@ class DB {
     if (id === 'undefined') {
       return null;
     }
-    
     const readPerson = { id, ...person };
 
     return readPerson;
   }
+
   readAll(...args) {
     if (args.length !== 0) {
       throw new Error('The method readAll() should be without parameters!')
     }
 
-    const arr = privateData.entries();
+    const arr = [];
+
+    privateData.forEach(function (value, key) {
+      arr.push(key, value);
+    });
 
     return arr;
-  }
+  };
+
   update(id, age) {
     if (typeof id !== 'string') {
       throw new Error('id must be a string!')
@@ -76,8 +79,11 @@ class DB {
       throw new Error('age not valid!')
     }
 
-    person.age = age;
-  }
+    for (let key in age) {
+      person.age = age[key];
+    }
+  };
+
   delete(id) {
     if (typeof id !== 'string') {
       throw new Error('id must be a string!')
@@ -87,8 +93,9 @@ class DB {
       throw new Error('id should not be undefined!')
     }
 
-    // privateData.delete(id);
-  }
+    privateData.delete(id);
+  };
+
   find(query) {
     if (typeof query !== 'object') {
       throw new Error('query must be an object!')
@@ -112,7 +119,7 @@ class DB {
 
       return arr;
     });
-  }
+  };
 }
 const db = new DB();
 const person = {
