@@ -18,14 +18,11 @@
 
 const isCustomerVerified = (obj) => {
     return new Promise((resolve, reject) => {
+        if (obj.verified === true) {
+            resolve(true);
+        }
 
-        setTimeout(function () {
-            if (obj.verified === true) {
-                resolve(true);
-            }
-
-            reject('Customer is not verified');
-        }, 0)
+        reject('Customer is not verified');
     });
 }
 

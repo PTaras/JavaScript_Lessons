@@ -24,32 +24,29 @@ const get = require('fetch').fetchUrl;
 const url = 'https://lab.lectrum.io/geo/api/countries';
 
 // Решение
-const https = require('https');
 
 if (typeof url !== 'string') {
     throw new Error('url must be a string');
 }
 
 class Countries {
-    constructor(){}
+    constructor() { }
 
     send(size) {
         if (typeof size !== 'number') {
             throw new Error('size must be a number');
         }
-        
+
         const fullURL = url + `?size=${size}`
-        
+
         return new Promise((resolve, reject) => {
-            https.get(fullURL, response => {
-                get(fullURL, (error, meta, body) => {
-                    const { data } = JSON.parse(body);
-                    if (response.statusCode === 200) {
-                        resolve(data);
-                    } else {
-                        reject(`We have error, status code: ${response.statusCode}`);
-                    }
-                });
+            get(fullURL, (error, meta, body) => {
+                const { data } = JSON.parse(body);
+                if (error === null && meta && meta.status === 200) {
+                    resolve(data);
+                } else {
+                    reject(`We have error, status code: ${meta.status}`);
+                }
             });
         });
     }

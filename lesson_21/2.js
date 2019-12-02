@@ -17,28 +17,25 @@
 // Решение
 const getCustomers = (array_1, array_2) => {
     return new Promise((resolve, reject) => {
+        const arr = [];
 
-        setTimeout(function () {
-            const arr = [];
+        for (let i = 0; i < array_1.length; i++) {
+            if (array_1[i].verified === true) {
+                for (let j = 0; j < array_2.length; j++) {
+                    if (array_1[i].id === array_2[j].id) {
 
-            for (let i = 0; i < array_1.length; i++) {
-                if (array_1[i].verified === true) {
-                    for (let j = 0; j < array_2.length; j++) {
-                        if (array_1[i].id === array_2[j].id) {
+                        const obj = { ...array_1[i], ...array_2[j] };
 
-                            const obj = { ...array_1[i], ...array_2[j] };
+                        arr.push(obj);
 
-                            arr.push(obj);
+                        resolve(arr);
 
-                            resolve(arr);
-
-                        } else {
-                            reject(`We don't have information about country for this customer: ${array_1[i].name}`);
-                        }
+                    } else {
+                        reject(`We don't have information about country for this customer: ${array_1[i].name}`);
                     }
                 }
             }
-        }, 0)
+        }
     });
 }
 
