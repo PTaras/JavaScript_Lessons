@@ -16,6 +16,7 @@ class Transaction {
     logs = (result) => {
 
         if (result === undefined) {
+
             return this.resultLog;
         }
 
@@ -26,14 +27,15 @@ class Transaction {
     status = (code) => {
 
         if (code === undefined) {
+
             return this.codeLog;
         }
         this.codeLog = code;
+
         return this.codeLog;
     };
     dispatch = async (scenario) => {
         scenario.forEach((element, step) => {
-            // console.log('dispatch', step)
             element.call(this.store, this.logs).then((resolve) => {
                 let result = {};
                 result.index = element.index;
@@ -43,12 +45,12 @@ class Transaction {
                 this.logs(result);
             },
                 (reject) => {
-                    // console.log('reject', step)
                     this.rollback(scenario, step);
+
                     let result = {};
                     result.index = element.index;
                     result.meta = element.meta;
-                    result.nextStep = null;
+                    result.stepResult = null;
                     result.error = {
                         'name': reject.name,
                         'message': reject.message,
@@ -60,16 +62,17 @@ class Transaction {
         });
 
         this.status('Успешно выполнена');
+
         await this.logs;
     };
     rollback = async (scenario) => {
         scenario.reverse().forEach((element) => {
-            // console.log('dispatch', this.store)
             element.restore(this.store, this.logs).then((resolve) => {
+
                 let result = {};
                 result.index = element.index;
                 result.meta = element.meta;
-                result.nextStep = resolve;
+                result.stepResult = resolve;
                 result.error = null;
                 this.logs(result);
                 this.status('Yспешно восстановлена');
@@ -82,7 +85,8 @@ class Transaction {
         await this.logs;
     };
 }
-function log(data) { console.log('log', data()) }
+
+function log(data) { console.log('log', data()) };
 
 const scenario = [
     {
@@ -91,25 +95,22 @@ const scenario = [
             title: 'Form authorization.',
             description: 'Authorization scenario',
         },
-        async call(store, logs) {
-            // Логика выполнения шага
-            // console.log('1call', store, logs);
+        async call(store) {
             if (store().get('name') !== undefined && store().get('password') !== undefined && store().get('phone') !== undefined) {
+
                 const stepResult = { 'step': 'Authorization successfully' };
 
                 return stepResult;
             }
             throw new Error('Authorization error!');
         },
-        async restore(store, logs) {
-            // Логика отката шага  
-            // console.log('1restore', store, logs)
+        async restore(store) {
             if (store().get('name') !== 'undefined'
                 && store().get('password') !== 'undefined'
                 && store().get('phone') !== 'undefined') {
 
-                const nextStep = { 'step': 'restore step 1' };
-                return nextStep;
+                const stepResult = { 'step': 'restore step 1' };
+                return stepResult;
                 throw new Error('restore step 1');
             }
             throw new Error('restore step 1 Error');
@@ -122,29 +123,26 @@ const scenario = [
             description:
                 'Validation scenario.',
         },
-        async call(store, logs) {
-            // Логика выполнения шага
-            // console.log('2call', store, logs)
+        async call(store) {
             if (store().get('name') === 'Taras'
                 && store().get('password') === '12345'
                 && store().get('phone') === '555-555-555') {
 
                 const stepResult = { 'step': 'Validation successfully!' };
 
-                return  stepResult;
+                return stepResult;
             }
             throw new TypeError('Validation error!');
         },
-        async restore(store, logs) {
-            // console.log('2restore', store, logs)
-            // Логика отката шага
-            if (store().get('name') !== 'Taras'
-                && store().get('password') !== '12345'
-                && store().get('phone') !== '555-555-555') {
-                // throw  new Error('restore step 2');
-                const nextStep = {'step': 'first step'};
+        async restore(store) {
+            if (store().get('name') === 'Taras'
+                && store().get('password') === '12345'
+                && store().get('phone') === '555-555-555') {
 
-                return  nextStep;
+                const stepResult = { 'step': 'restore step 2' };
+
+                return stepResult;
+
             }
             throw  new Error('restore step 2 Error');
         },
@@ -156,27 +154,24 @@ const scenario = [
             description:
                 'Submitting the form to the server',
         },
-        async call(store, logs) {
-            // Логика выполнения шага
-            // console.log('2call', store, logs)
+        async call(store) {
+
             if (store().get('server response') === '200') {
 
                 const nextStep = { 'step': 'Data Submission Successful!' };
 
-                return  nextStep;
+                return nextStep;
             }
             throw new TypeError('Data Submission error!');
         },
-        async restore(store, logs) {
-            // console.log('2restore', store, logs)
-            // Логика отката шага
+        async restore(store) {
             if (store().get('server response') === '200') {
-                throw  new Error('restore step 3');
-                const nextStep = {'step': 'second step'};
+                throw new Error('restore step 3');
+                const nextStep = { 'step': 'second step' };
 
-                return  nextStep;
+                return nextStep;
             }
-            throw  new Error('restore step 3 Error');
+            throw new Error('restore step 3 Error');
         },
     },
 ];
