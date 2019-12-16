@@ -1,162 +1,182 @@
 class Transaction {
-    constructor(scenario) {
-        this.status = 's';
-        this.resultLog = []
+    constructor() {
+        this.resultLog = [];
     };
 
     store = () => {
         const map = new Map([
-            ['name', 'Tarass'],
+            ['name', 'Taras'],
             ['password', '12345'],
-            ['phone', '555-555-555']
+            ['phone', '555-555-555'],
+            ['server response', '503']
         ]);
 
         return map;
     };
-    logs = (maxs) => {
-        // console.log(this.resultLog)
-        this.resultLog.push(maxs)
+    logs = (result) => {
+
+        if (result === undefined) {
+            return this.resultLog;
+        }
+
+        this.resultLog.push(result);
 
         return this.resultLog;
     };
-    dispatch = async (scenario) => {
+    status = (code) => {
 
-        // console.log(scenario)
-        // for (let i=0; i<scenario.length; i+=1){
-        //     console.log(scenario[i])
-        // }
-        // console.log(this)
+        if (code === undefined) {
+            return this.codeLog;
+        }
+        this.codeLog = code;
+        return this.codeLog;
+    };
+    dispatch = async (scenario) => {
         scenario.forEach((element, step) => {
-            console.log('dispatch', step)
+            // console.log('dispatch', step)
             element.call(this.store, this.logs).then((resolve) => {
                 let result = {};
-                console.log('Успешно Успешно выполнена')
                 result.index = element.index;
                 result.meta = element.meta;
                 result.stepResult = resolve;
                 result.error = null;
-                // console.log(element)
                 this.logs(result);
-                
-                // console.log(this.logss)
             },
                 (reject) => {
-                    console.log('rject', step)
-
-                    // console.log("reject:" + reject);
+                    // console.log('reject', step)
                     this.rollback(scenario, step);
                     let result = {};
                     result.index = element.index;
                     result.meta = element.meta;
-                    result.nextStep = reject;
-                    result.error = reject;
+                    result.nextStep = null;
+                    result.error = {
+                        'name': reject.name,
+                        'message': reject.message,
+                        'stack': reject.stack,
+                    };
                     this.logs(result);
                 }
             );
         });
+
+        this.status('Успешно выполнена');
         await this.logs;
     };
-    rollback = async (scenario, step) => {
-        scenario.reverse().forEach((element, step) => {
+    rollback = async (scenario) => {
+        scenario.reverse().forEach((element) => {
             // console.log('dispatch', this.store)
             element.restore(this.store, this.logs).then((resolve) => {
                 let result = {};
-                console.log('Успешно восстановлена')
                 result.index = element.index;
                 result.meta = element.meta;
-                result.stepResult = resolve;
+                result.nextStep = resolve;
                 result.error = null;
-                // console.log(element)
                 this.logs(result);
-                // console.log(this.logss)
+                this.status('Yспешно восстановлена');
             },
                 (reject) => {
-                    console.log('Неуспешно восстановлена')
-
-                    // console.log("reject:" + reject);
-                    // this.rollback(scenario, step);
-                    let result = {};
-                    result.index = element.index;
-                    result.meta = element.meta;
-                    result.nextStep = reject;
-                    result.error = reject;
-                    this.logs(result);
+                    this.status('Неуспешно восстановлена');
                 }
             );
         })
         await this.logs;
-        };
+    };
 }
 function log(data) { console.log('log', data()) }
+
 const scenario = [
     {
         index: 1,
         meta: {
-            title: 'Authorization.',
+            title: 'Form authorization.',
             description: 'Authorization scenario',
         },
         async call(store, logs) {
             // Логика выполнения шага
-            // console.log('1call', store, logs)
-            //  console.log('name', store().get('name'))
+            // console.log('1call', store, logs);
             if (store().get('name') !== undefined && store().get('password') !== undefined && store().get('phone') !== undefined) {
-                console.log('if')
-                // store()
-                // console.log(store().get('name'))
-                console.log(store().get('name') !== 'undefined')
-                // const stepResult = {'a':'s'};
+                const stepResult = { 'step': 'Authorization successfully' };
 
-                return await 'a';
+                return stepResult;
             }
-            throw new Error('oups')
-            // return await rollback();
+            throw new Error('Authorization error!');
         },
         async restore(store, logs) {
-            // Логика отката шага            
+            // Логика отката шага  
             // console.log('1restore', store, logs)
             if (store().get('name') !== 'undefined'
                 && store().get('password') !== 'undefined'
                 && store().get('phone') !== 'undefined') {
 
-                // const stepResult = null;
-                    throw await new Error('restore 1')
-                // return rollback();
+                const nextStep = { 'step': 'restore step 1' };
+                return nextStep;
+                throw new Error('restore step 1');
             }
-            throw await new Error('restoreError');
+            throw new Error('restore step 1 Error');
         },
     },
     {
         index: 2,
         meta: {
-            title: 'Validation.',
+            title: 'Input validation',
             description:
-                'Validation scenario ends successfully or unsuccessfully.',
+                'Validation scenario.',
         },
         async call(store, logs) {
             // Логика выполнения шага
             // console.log('2call', store, logs)
-            if (    store().get('name')      === 'Taras' 
-                &&  store().get('password')  === '12345' 
-                &&  store().get('phone')     === '555-555-555') {
+            if (store().get('name') === 'Taras'
+                && store().get('password') === '12345'
+                && store().get('phone') === '555-555-555') {
 
-                const stepResult = {'a':'s'};
+                const stepResult = { 'step': 'Validation successfully!' };
 
-                return awaitstepResult;
+                return  stepResult;
             }
-            throw new Error('Ошибка выполнения шага');
+            throw new TypeError('Validation error!');
         },
         async restore(store, logs) {
             // console.log('2restore', store, logs)
             // Логика отката шага
-            if (    store().get('name')      !== 'Taras' 
-                &&  store().get('password')  !== '12345' 
-                &&  store().get('phone')     !== '555-555-555') {
-                throw await new Error('restoreError')
-                const stepResult = null;
+            if (store().get('name') !== 'Taras'
+                && store().get('password') !== '12345'
+                && store().get('phone') !== '555-555-555') {
+                // throw  new Error('restore step 2');
+                const nextStep = {'step': 'first step'};
 
-                return awaitstepResult;
+                return  nextStep;
             }
-            throw await new Error('restoreError1')
+            throw  new Error('restore step 2 Error');
+        },
+    },
+    {
+        index: 3,
+        meta: {
+            title: 'Form submission.',
+            description:
+                'Submitting the form to the server',
+        },
+        async call(store, logs) {
+            // Логика выполнения шага
+            // console.log('2call', store, logs)
+            if (store().get('server response') === '200') {
+
+                const nextStep = { 'step': 'Data Submission Successful!' };
+
+                return  nextStep;
+            }
+            throw new TypeError('Data Submission error!');
+        },
+        async restore(store, logs) {
+            // console.log('2restore', store, logs)
+            // Логика отката шага
+            if (store().get('server response') === '200') {
+                throw  new Error('restore step 3');
+                const nextStep = {'step': 'second step'};
+
+                return  nextStep;
+            }
+            throw  new Error('restore step 3 Error');
         },
     },
 ];
@@ -167,12 +187,9 @@ const transaction = new Transaction();
         const { store, logs, status } = transaction;
         log(store);
         log(logs);
-        // log(status);
+        log(status);
     } catch (error) {
         console.log('error', error)
         // Send email about broken transaction
     }
 })();
-// console.log(transaction.store());
-// console.log(transaction.logs());
-// console.log(transaction.logs());
